@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Item card pesanan untuk RecyclerView di OrdersActivity dan DashboardActivity.
+    Tombol Approve/Reject/Tandai Selesai ditampilkan kondisional dari Adapter
+    berdasarkan status pesanan.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/surface_card">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Row 1: ID + Meja + Waktu | Badge Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="2dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvOrderId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ORD-001"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"/>
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:background="@color/text_tertiary"
+                        android:layout_marginHorizontal="6dp"/>
+
+                    <TextView
+                        android:id="@+id/tvTableNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meja 4"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"/>
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:background="@color/text_tertiary"
+                        android:layout_marginHorizontal="6dp"/>
+
+                    <TextView
+                        android:id="@+id/tvOrderTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10 mnt lalu"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvBuyerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Pembeli"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- Status Badge -->
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_badge_pending"
+                android:textColor="@color/status_pending_text"/>
+        </LinearLayout>
+
+        <!-- Divider tipis -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"
+            android:layout_marginVertical="10dp"/>
+
+        <!-- Row 2: Daftar Item -->
+        <TextView
+            android:id="@+id/tvOrderItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ayam Taliwang x2 • Es Teh x1"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginBottom="4dp"/>
+
+        <!-- Catatan -->
+        <TextView
+            android:id="@+id/tvOrderNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📝 Catatan: Pedas sedang"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:textColor="@color/text_tertiary"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"/>
+
+        <!-- Row 3: Total | Tombol aksi -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvOrderTotal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Rp 77.000"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"/>
+
+            <!-- Tombol Approve (tampil saat PENDING) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Approve"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="6dp"
+                android:visibility="gone"/>
+
+            <!-- Tombol Reject (tampil saat PENDING) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Reject"
+                android:textSize="12sp"
+                android:textColor="@color/primary_light"
+                app:strokeColor="@color/primary_light"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="6dp"
+                android:visibility="gone"/>
+
+            <!-- Label Menunggu QRIS (tampil saat APPROVED) -->
+            <TextView
+                android:id="@+id/tvWaitingQris"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menunggu Pembayaran QRIS"
+                android:textSize="11sp"
+                android:textColor="@color/status_approved_text"
+                android:background="@color/status_approved_bg"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:visibility="gone"/>
+
+            <!-- Tombol Tandai Selesai (tampil saat PAID) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarkDone"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Tandai Selesai"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="6dp"
+                android:visibility="gone"/>
+
+            <!-- Tombol Detail -->
+            <ImageButton
+                android:id="@+id/btnDetail"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_chevron_right"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/text_tertiary"
+                android:layout_marginStart="4dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

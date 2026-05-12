@@ -1,3 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nusa_Rasa</string>
+    <string name="app_name">Nusa Rasa Admin</string>
+
+    <!-- Login -->
+    <string name="hint_email">admin@nusarasa.id</string>
+    <string name="hint_password">••••••••</string>
+    <string name="btn_login">Login</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="loading_login">Memverifikasi…</string>
+
+    <!-- Nav -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_orders">Pesanan Masuk</string>
+    <string name="nav_menu">Kelola Menu</string>
+    <string name="nav_payments">Pembayaran</string>
+    <string name="nav_logout">Logout</string>
+
+    <!-- Dashboard -->
+    <string name="stat_total_orders">Total Pesanan</string>
+    <string name="stat_pending">Pending</string>
+    <string name="stat_approved">Approved</string>
+    <string name="stat_paid">Paid</string>
+    <string name="stat_done">Selesai</string>
+    <string name="stat_revenue">Pendapatan Hari Ini</string>
+    <string name="recent_orders">Pesanan Terbaru</string>
+
+    <!-- Orders -->
+    <string name="filter_all">Semua</string>
+    <string name="filter_pending">Pending</string>
+    <string name="filter_approved">Approved</string>
+    <string name="filter_paid">Paid</string>
+    <string name="filter_done">Selesai</string>
+    <string name="btn_approve">Approve</string>
+    <string name="btn_reject">Reject</string>
+    <string name="btn_done">Tandai Selesai</string>
+    <string name="btn_detail">Detail</string>
+    <string name="empty_orders">Belum ada pesanan masuk 🍽️</string>
+    <string name="loading_orders">Loading pesanan…</string>
+
+    <!-- Reject Dialog -->
+    <string name="dialog_reject_title">Tolak Pesanan?</string>
+    <string name="dialog_reject_message">Yakin ingin menolak pesanan ini? Tindakan tidak bisa dibatalkan.</string>
+    <string name="dialog_reject_confirm">Ya, Tolak</string>
+    <string name="dialog_cancel">Batal</string>
+
+    <!-- Order Detail -->
+    <string name="label_buyer">Nama Pembeli</string>
+    <string name="label_table">Nomor Meja</string>
+    <string name="label_items">Item Pesanan</string>
+    <string name="label_note">Catatan</string>
+    <string name="label_total">Total Pembayaran</string>
+    <string name="label_status">Status</string>
+    <string name="label_time">Waktu Pemesanan</string>
+    <string name="loading_process">Memproses pesanan…</string>
+
+    <!-- Menu -->
+    <string name="btn_add_menu">+ Tambah Menu</string>
+    <string name="label_available">Tersedia</string>
+    <string name="label_unavailable">Habis</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_delete">Hapus</string>
+
+    <!-- Add Menu -->
+    <string name="hint_menu_name">Nama makanan / minuman</string>
+    <string name="hint_menu_price">Harga (Rp)</string>
+    <string name="hint_menu_description">Deskripsi singkat</string>
+    <string name="hint_menu_category">Kategori</string>
+    <string name="btn_upload_image">Upload Foto</string>
+    <string name="btn_save">Simpan</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="loading_upload">Mengupload menu…</string>
+
+    <!-- Payment -->
+    <string name="col_id">ID</string>
+    <string name="col_buyer">Pembeli</string>
+    <string name="col_order">Order</string>
+    <string name="col_amount">Jumlah</string>
+    <string name="col_status">Status</string>
+    <string name="col_time">Waktu</string>
 </resources>
