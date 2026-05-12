@@ -12,7 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nusa_Rasa">
         <activity
+            android:name=".admin"
+            android:exported="false" />
+        <activity
+            android:name=".qris"
+            android:exported="false" />
+        <activity
+            android:name=".keranjang"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".home"
+            android:exported="false" />
+        <activity
+            android:name=".splash"
+            android:exported="false" />
+        <activity
+            android:name=".masuk"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
