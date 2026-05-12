@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialog konfirmasi tolak pesanan.
+    Gunakan via MaterialAlertDialogBuilder + setView() di Activity:
+        MaterialAlertDialogBuilder(this)
+            .setView(R.layout.dialog_reject_confirm)
+            .show()
+    Atau inflate manual untuk custom dialog.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Ikon warning -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:text="⚠️"
+            android:textSize="24sp"
+            android:background="@color/status_rejected_bg"/>
+    </LinearLayout>
+
+    <!-- Judul -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_reject_title"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Pesan -->
+    <TextView
+        android:id="@+id/tvDialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_reject_message"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Info pesanan -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/surface"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:id="@+id/tvDialogOrderId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ORD-001 • Meja 4"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="2dp"/>
+
+        <TextView
+            android:id="@+id/tvDialogBuyerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Pembeli"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
+    </LinearLayout>
+
+    <!-- Tombol -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogCancel"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_cancel"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            app:strokeColor="@color/divider"
+            app:cornerRadius="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogReject"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_reject_confirm"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary_light"
+            app:cornerRadius="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>

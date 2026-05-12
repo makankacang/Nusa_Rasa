@@ -10,3 +10,52 @@
     <color name="text_dark">#1A1A1A</color>
     <color name="surface">#F5F5F5</color>
 </resources>
+    <!-- Brand -->
+    <color name="primary">#C0392B</color>
+    <color name="primary_dark">#922B21</color>
+    <color name="primary_light">#E74C3C</color>
+    <color name="blush">#F5B7B1</color>
+    <color name="soft_red">#FDF2F1</color>
+    <color name="sidebar_bg">#7B241C</color>
+    <color name="sidebar_icon_active">#FFFFFF</color>
+    <color name="sidebar_icon_inactive">#9E9E9E</color>
+
+    <!-- Neutrals -->
+    <color name="white">#FFFFFF</color>
+    <color name="surface">#F5F5F5</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="divider">#E5E7EB</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_tertiary">#9CA3AF</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Status: Pending -->
+    <color name="status_pending_bg">#FEF3C7</color>
+    <color name="status_pending_text">#92400E</color>
+
+    <!-- Status: Approved -->
+    <color name="status_approved_bg">#DBEAFE</color>
+    <color name="status_approved_text">#1E40AF</color>
+
+    <!-- Status: Paid -->
+    <color name="status_paid_bg">#D1FAE5</color>
+    <color name="status_paid_text">#065F46</color>
+
+    <!-- Status: Rejected -->
+    <color name="status_rejected_bg">#FEE2E2</color>
+    <color name="status_rejected_text">#991B1B</color>
+
+    <!-- Status: Done -->
+    <color name="status_done_bg">#F3F4F6</color>
+    <color name="status_done_text">#6B7280</color>
+
+    <!-- Toggle -->
+    <color name="toggle_on">#27AE60</color>
+    <color name="toggle_off">#D1D5DB</color>
+
+    <!-- Windowbackground -->
+    <color name="colorPrimary">#C0392B</color>
+    <color name="colorPrimaryDark">#922B21</color>
+    <color name="colorAccent">#E74C3C</color>
+</resources>

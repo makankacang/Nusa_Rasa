@@ -10,7 +10,32 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nusa_Rasa">
+        android:theme="@style/Theme.NusaRasaAdmin">
+
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MenuActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".OrderDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".OrdersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
         <activity
             android:name=".admin"
             android:exported="false" />
@@ -31,13 +56,17 @@
             android:exported="false" />
         <activity
             android:name=".masuk"
+            android:name=".AddMenuActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

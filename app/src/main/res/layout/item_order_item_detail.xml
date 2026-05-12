@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Satu baris item makanan di dalam RecyclerView rvOrderItems
+    pada activity_order_detail.xml.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="8dp">
+
+    <!-- Jumlah -->
+    <TextView
+        android:id="@+id/tvItemQty"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:text="2"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
+        android:background="@color/soft_red"
+        android:layout_marginEnd="12dp"/>
+
+    <!-- Nama item -->
+    <TextView
+        android:id="@+id/tvItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Ayam Taliwang"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary"/>
+
+    <!-- Harga subtotal -->
+    <TextView
+        android:id="@+id/tvItemSubtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rp 70.000"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"/>
+
+</LinearLayout>
