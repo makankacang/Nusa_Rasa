@@ -80,15 +80,17 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvOrderDetail"
                 android:layout_margin="20dp"
                 android:padding="18dp"
                 android:background="@drawable/bg_soft_red"
-                android:text="#ORD-001 - Meja 3\nBudi Santoso - 2 menit lalu\n\nAyam Taliwang x1     Rp 25.000\nNasi Plecing x2      Rp 36.000\n\nTotal                Rp 64.050"
+                android:text="Tidak ada pesanan masuk"
                 android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
+                android:id="@+id/layoutTombol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
@@ -96,6 +98,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btnSetujui"
                     android:layout_width="0dp"
                     android:layout_height="52dp"
                     android:layout_weight="1"
@@ -106,6 +109,7 @@
                 <Space android:layout_width="12dp" android:layout_height="1dp"/>
 
                 <Button
+                    android:id="@+id/btnTolak"
                     android:layout_width="0dp"
                     android:layout_height="52dp"
                     android:layout_weight="1"

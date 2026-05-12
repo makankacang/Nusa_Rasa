@@ -129,6 +129,17 @@
 
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/tvAdminLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:text="Admin Panel"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:paddingBottom="8dp" />
+
         </LinearLayout>
 
     </LinearLayout>

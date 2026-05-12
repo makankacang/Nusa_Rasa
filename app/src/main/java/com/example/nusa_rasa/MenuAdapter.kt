@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
 class MenuAdapter(
-    private val listMenu: List<MenuItem>,
+    private var listMenu: List<MenuItem>,
     private val onTambahClick: (MenuItem) -> Unit
 ) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
@@ -27,15 +27,16 @@ class MenuAdapter(
 
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menu = listMenu[position]
-
         holder.tvEmoji.text = menu.emoji
         holder.tvNama.text = menu.nama
         holder.tvHarga.text = menu.harga
-
-        holder.btnTambah.setOnClickListener {
-            onTambahClick(menu)
-        }
+        holder.btnTambah.setOnClickListener { onTambahClick(menu) }
     }
 
     override fun getItemCount(): Int = listMenu.size
+
+    fun updateList(newList: List<MenuItem>) {
+        listMenu = newList
+        notifyDataSetChanged()
+    }
 }

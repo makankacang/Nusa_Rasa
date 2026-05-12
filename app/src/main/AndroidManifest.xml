@@ -56,7 +56,6 @@
             android:exported="false" />
         <activity
             android:name=".masuk"
-            android:name=".AddMenuActivity"
             android:exported="true">
 
             <intent-filter>
@@ -66,6 +65,10 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".AddMenuActivity"
+            android:exported="false" />
 
     </application>
 
