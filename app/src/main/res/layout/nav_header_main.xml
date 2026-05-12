@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Digunakan sebagai header NavigationView di activity_dashboard.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/sidebar_bg"
+    android:paddingHorizontal="18dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="20dp">
+
+    <!-- Logo + Nama App -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:id="@+id/navHeaderLogo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_logo"
+            android:layout_marginEnd="10dp"
+            app:tint="@color/white"
+            xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nusa Rasa"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADMIN PANEL"
+        android:textSize="9sp"
+        android:letterSpacing="0.1"
+        android:textColor="#73FFFFFF"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1EFFFFFF"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Admin Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/navHeaderAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:text="A"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:background="@color/soft_red"
+            android:layout_marginEnd="10dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/navHeaderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/navHeaderEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="admin@nusarasa.id"
+                android:textSize="11sp"
+                android:textColor="#9AFFFFFF"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

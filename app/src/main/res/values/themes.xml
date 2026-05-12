@@ -1,9 +1,48 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Nusa_Rasa" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Theme utama aplikasi -->
+    <style name="Theme.NusaRasaAdmin" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary_light</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">@color/surface_card</item>
     </style>
 
-    <style name="Theme.Nusa_Rasa" parent="Base.Theme.Nusa_Rasa" />
+    <!-- Style Toolbar title -->
+    <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- Style text item NavigationView -->
+    <style name="NavItemTextAppearance" parent="@style/TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/sidebar_icon_inactive</item>
+    </style>
+
+    <!-- Style outlined button merah -->
+    <style name="ButtonOutlinedRed" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/primary</item>
+        <item name="strokeColor">@color/primary</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <!-- Style MaterialButton primary -->
+    <style name="ButtonPrimary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <!-- TextInputLayout merah -->
+    <style name="TextInputRed" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary</item>
+        <item name="hintTextColor">@color/primary</item>
+        <item name="errorTextColor">@color/primary_light</item>
+    </style>
+
 </resources>

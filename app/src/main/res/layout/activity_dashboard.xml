@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DashboardActivity = shell utama aplikasi.
+    Berisi DrawerLayout + NavigationView (sidebar) + konten utama.
+    Semua halaman lain (Orders, Menu, Payment) diluncurkan dari sini
+    via Intent ketika item nav di-klik.
+-->
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- ===================== KONTEN UTAMA ===================== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/surface">
+
+        <!-- Top AppBar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="2dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/surface_card"
+                app:navigationIcon="@drawable/ic_menu"
+                app:navigationIconTint="@color/text_primary">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvToolbarTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dashboard"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <TextView
+                        android:id="@+id/tvToolbarSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+
+                <!-- Notif + Avatar di kanan -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="4dp"
+                    android:layout_marginEnd="0dp">
+
+                    <ImageButton
+                        android:id="@+id/btnNotification"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_notification"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:tint="@color/text_secondary"
+                        android:layout_marginEnd="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvAdminAvatar"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:gravity="center"
+                        android:text="A"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:background="@color/primary"/>
+                </LinearLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- ScrollView konten Dashboard -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="24dp">
+
+                <!-- ===== Kartu Statistik (row 1: 2 kolom) ===== -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <!-- Stat: Total Pesanan -->
+                    <include
+                        android:id="@+id/statTotalOrders"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"/>
+
+                    <!-- Stat: Pending -->
+                    <include
+                        android:id="@+id/statPending"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+                <!-- ===== Kartu Statistik (row 2: 2 kolom) ===== -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <!-- Stat: Paid -->
+                    <include
+                        android:id="@+id/statPaid"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"/>
+
+                    <!-- Stat: Selesai -->
+                    <include
+                        android:id="@+id/statDone"
+                        layout="@layout/item_stat_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+                <!-- ===== Kartu Pendapatan Harian (full width) ===== -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardRevenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="@color/primary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pendapatan Hari Ini"
+                            android:textSize="11sp"
+                            android:textColor="#CCFFFFFF"
+                            android:letterSpacing="0.06"
+                            android:layout_marginBottom="6dp"/>
+
+                        <TextView
+                            android:id="@+id/tvRevenue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textSize="26sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="4dp"/>
+
+                        <TextView
+                            android:id="@+id/tvRevenueInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="dari 0 transaksi berhasil"
+                            android:textSize="11sp"
+                            android:textColor="#AAFFFFFF"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- ===== Recent Orders ===== -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/recent_orders"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <TextView
+                        android:id="@+id/tvSeeAllOrders"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lihat Semua →"
+                        android:textSize="12sp"
+                        android:textColor="@color/primary"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"/>
+                </LinearLayout>
+
+                <!-- RecyclerView Recent Orders (non-scrollable, max 3 item) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRecentOrders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- ===================== NAVIGATION DRAWER (Sidebar) ===================== -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/sidebar_bg"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/nav_drawer_menu"
+        app:itemTextColor="@color/sidebar_icon_inactive"
+        app:itemIconTint="@color/sidebar_icon_inactive"
+        app:itemTextAppearance="@style/NavItemTextAppearance"
+        app:itemBackground="@drawable/nav_item_background"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>
