@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary_red">#C0392B</color>
+    <color name="dark_red">#922B21</color>
+    <color name="light_red">#E74C3C</color>
+    <color name="blush">#F5B7B1</color>
+    <color name="soft_red">#FDF2F1</color>
+    <color name="text_dark">#1A1A1A</color>
+    <color name="surface">#F5F5F5</color>
+</resources>
     <!-- Brand -->
     <color name="primary">#C0392B</color>
     <color name="primary_dark">#922B21</color>
