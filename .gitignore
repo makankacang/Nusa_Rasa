@@ -1,0 +1,22 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+
+# Claude
+.claude/
+
+# Android / Gradle
+Nusa_Rasa/.gradle/
+Nusa_Rasa/build/
+Nusa_Rasa/app/build/
+Nusa_Rasa/local.properties
+Nusa_Rasa/*.iml
+Nusa_Rasa/.idea/
