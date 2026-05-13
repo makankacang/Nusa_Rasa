@@ -31,30 +31,36 @@ class LoginActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
-        // Jika sudah login, langsung ke Dashboard
-        if (session.isLoggedIn()) {
-            goToDashboard()
-            return
-        }
+        // =====================================================================
+        // MODE TES: cek session di-nonaktifkan sementara.
+        // CARA BALIKIN: hapus komentar pada blok di bawah ini (4 baris).
+         if (session.isLoggedIn()) {
+             goToDashboard()
+             return
+         }
+        // =====================================================================
 
         bindViews()
         setupListeners()
     }
 
     private fun bindViews() {
-        tilEmail      = findViewById(R.id.tilEmail)
-        tilPassword   = findViewById(R.id.tilPassword)
-        etEmail       = findViewById(R.id.etEmail)
-        etPassword    = findViewById(R.id.etPassword)
-        tvError       = findViewById(R.id.tvError)
-        btnLogin      = findViewById(R.id.btnLogin)
+        tilEmail       = findViewById(R.id.tilEmail)
+        tilPassword    = findViewById(R.id.tilPassword)
+        etEmail        = findViewById(R.id.etEmail)
+        etPassword     = findViewById(R.id.etPassword)
+        tvError        = findViewById(R.id.tvError)
+        btnLogin       = findViewById(R.id.btnLogin)
         loadingOverlay = findViewById(R.id.loadingOverlay)
     }
 
     private fun setupListeners() {
+        // =====================================================================
+        // MODE TES: tombol Login langsung masuk Dashboard tanpa hit API.
+        // CARA BALIKIN: ganti baris di bawah ini dari goToDashboard() → attemptLogin()
+        // =====================================================================
         btnLogin.setOnClickListener { attemptLogin() }
 
-        // Hapus error saat user mulai mengetik
         etEmail.setOnFocusChangeListener    { _, _ -> clearError() }
         etPassword.setOnFocusChangeListener { _, _ -> clearError() }
     }
@@ -63,7 +69,6 @@ class LoginActivity : AppCompatActivity() {
         val email    = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
 
-        // Validasi lokal
         if (email.isEmpty()) {
             tilEmail.error = "Email tidak boleh kosong"
             return

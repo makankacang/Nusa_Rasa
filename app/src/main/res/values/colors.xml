@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="primary_red">#C0392B</color>
-    <color name="dark_red">#922B21</color>
-    <color name="light_red">#E74C3C</color>
-    <color name="blush">#F5B7B1</color>
-    <color name="soft_red">#FDF2F1</color>
-    <color name="text_dark">#1A1A1A</color>
-    <color name="surface">#F5F5F5</color>
-</resources>
-    <!-- Brand -->
+
+    <!-- Brand / Primary -->
     <color name="primary">#C0392B</color>
     <color name="primary_dark">#922B21</color>
     <color name="primary_light">#E74C3C</color>
@@ -21,6 +12,7 @@
     <color name="sidebar_icon_inactive">#9E9E9E</color>
 
     <!-- Neutrals -->
+    <color name="black">#FF000000</color>
     <color name="white">#FFFFFF</color>
     <color name="surface">#F5F5F5</color>
     <color name="surface_card">#FFFFFF</color>
@@ -29,6 +21,12 @@
     <color name="text_secondary">#6B7280</color>
     <color name="text_tertiary">#9CA3AF</color>
     <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Alias lama (agar tidak ada referensi yang rusak) -->
+    <color name="primary_red">#C0392B</color>
+    <color name="dark_red">#922B21</color>
+    <color name="light_red">#E74C3C</color>
+    <color name="text_dark">#1A1A1A</color>
 
     <!-- Status: Pending -->
     <color name="status_pending_bg">#FEF3C7</color>
@@ -54,8 +52,9 @@
     <color name="toggle_on">#27AE60</color>
     <color name="toggle_off">#D1D5DB</color>
 
-    <!-- Windowbackground -->
+    <!-- Material / WindowBackground compat -->
     <color name="colorPrimary">#C0392B</color>
     <color name="colorPrimaryDark">#922B21</color>
     <color name="colorAccent">#E74C3C</color>
+
 </resources>

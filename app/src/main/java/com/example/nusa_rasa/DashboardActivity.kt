@@ -25,11 +25,12 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var toolbar: Toolbar
 
-    // Stat card view refs (via include IDs → child views)
     private lateinit var tvRevenue: TextView
     private lateinit var tvRevenueInfo: TextView
     private lateinit var tvSeeAllOrders: TextView
     private lateinit var rvRecentOrders: RecyclerView
+
+
 
     private val rupiahFormat: NumberFormat =
         NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
@@ -41,13 +42,22 @@ class DashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dashboard)
 
         session = SessionManager(this)
-        if (!session.isLoggedIn()) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-            return
-        }
+
+        // =====================================================================
+        // MODE TES: cek session di-nonaktifkan sementara.
+        // CARA BALIKIN: hapus komentar pada blok di bawah ini (4 baris).
+         if (!session.isLoggedIn()) {
+             startActivity(Intent(this, LoginActivity::class.java))
+             finish()
+             return
+         }
+        // =====================================================================
 
         bindViews()
+
+        tvSeeAllOrders.setOnClickListener {
+            startActivity(Intent(this, OrdersActivity::class.java))
+        }
         setupToolbar()
         setupNavDrawer()
         setupNavHeader()
@@ -97,9 +107,9 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setupNavHeader() {
         val header = navigationView.getHeaderView(0)
-        header.findViewById<TextView>(R.id.tvNavAdminName)?.text  = session.getAdminName()
-        header.findViewById<TextView>(R.id.tvNavAdminEmail)?.text = session.getAdminEmail()
-        // Inisial avatar
+        // MODE TES: session kosong, tampilkan nama default
+        header.findViewById<TextView>(R.id.tvNavAdminName)?.text  = session.getAdminName().ifEmpty { "Admin" }
+        header.findViewById<TextView>(R.id.tvNavAdminEmail)?.text = session.getAdminEmail().ifEmpty { "admin@nusarasa.id" }
         val initial = session.getAdminName().firstOrNull()?.uppercase() ?: "A"
         header.findViewById<TextView>(R.id.tvNavAvatar)?.text = initial
     }
@@ -111,19 +121,16 @@ class DashboardActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val stats = response.body()!!
 
-                    // Revenue card
                     tvRevenue.text     = rupiahFormat.format(stats.revenue)
                     tvRevenueInfo.text = "dari ${stats.revenueTransactions} transaksi berhasil"
 
-                    // Stat cards (via include IDs)
                     bindStatCard(R.id.statTotalOrders, "Total Pesanan", stats.totalOrders.toString(), "hari ini")
                     bindStatCard(R.id.statPending,     "Pending",       stats.pending.toString(),     "menunggu approval")
                     bindStatCard(R.id.statPaid,        "Paid",          stats.paid.toString(),        "sudah bayar")
                     bindStatCard(R.id.statDone,        "Selesai",       stats.done.toString(),        "selesai hari ini")
 
-                    // Recent orders
                     val adapter = OrderAdapter(
-                        orders  = stats.recentOrders.toMutableList(),
+                        orders   = stats.recentOrders.toMutableList(),
                         onDetail = { order ->
                             val intent = Intent(this@DashboardActivity, OrderDetailActivity::class.java)
                             intent.putExtra("order_id", order.id)
@@ -135,7 +142,7 @@ class DashboardActivity : AppCompatActivity() {
                     rvRecentOrders.adapter = adapter
                 }
             } catch (_: Exception) {
-                // Tidak tampilkan error agar UX tetap bersih; cukup biarkan nilai default
+                // Tidak tampilkan error; nilai default tetap tampil
             }
         }
     }
@@ -146,6 +153,7 @@ class DashboardActivity : AppCompatActivity() {
         card.findViewById<TextView>(R.id.tvStatValue)?.text = value
         card.findViewById<TextView>(R.id.tvStatSub)?.text   = sub
     }
+
 
     private fun logout() {
         session.clearSession()

@@ -8,6 +8,7 @@
 
     <!-- Card Login -->
     <androidx.cardview.widget.CardView
+        android:fitsSystemWindows="true"
         android:id="@+id/cardLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
