@@ -10,40 +10,10 @@ data class LoginRequest(
 )
 
 data class LoginResponse(
-    val token: String,
-    val admin: Admin
-)
-
-data class Admin(
-    val id: Int,
-    val name: String,
-    val email: String
-)
-
-// ─── Orders ──────────────────────────────────────────────────────────────────
-
-data class Order(
-    val id: Int,
-    @SerializedName("order_code") val orderCode: String,
-    @SerializedName("customer_name") val customerName: String,
-    @SerializedName("table_number") val tableNumber: String,
-    val items: List<OrderItem>,
-    val total: Long,
-    val status: String,           // pending | approved | paid | done | rejected
-    val note: String?,
-    @SerializedName("created_at") val createdAt: String
-)
-
-data class OrderItem(
-    @SerializedName("menu_id") val menuId: Int,
-    @SerializedName("menu_name") val menuName: String,
-    val quantity: Int,
-    val price: Long,
-    val subtotal: Long
-)
-
-data class UpdateStatusRequest(
-    val status: String
+    @SerializedName("access_token") val accessToken: String,
+    @SerializedName("token_type") val tokenType: String,
+    @SerializedName("admin_id") val adminId: Int,
+    val name: String
 )
 
 // ─── Menu ─────────────────────────────────────────────────────────────────────
@@ -51,11 +21,57 @@ data class UpdateStatusRequest(
 data class MenuItem(
     val id: Int,
     val name: String,
-    val price: Long,
-    val kategori: String,         // makanan | minuman | sayuran
     val description: String?,
-    @SerializedName("is_available") val isAvailable: Boolean,
-    @SerializedName("image_url") val imageUrl: String?
+    val price: Int,
+    val image: String?,
+    val category: String?,
+    @SerializedName("is_available") val isAvailable: Boolean
+)
+
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+data class CreateOrderItemRequest(
+    @SerializedName("menu_id") val menuId: Int,
+    val quantity: Int,
+    val subtotal: Int
+)
+
+data class CreateOrderRequest(
+    @SerializedName("customer_name") val customerName: String,
+    @SerializedName("table_number") val tableNumber: String?,
+    val notes: String?,
+    val items: List<CreateOrderItemRequest>
+)
+
+data class Order(
+    val id: Int,
+    @SerializedName("customer_name") val customerName: String,
+    @SerializedName("table_number") val tableNumber: String?,
+    @SerializedName("total_price") val totalPrice: Int,
+    val status: String,
+    val notes: String?,
+    @SerializedName("created_at") val createdAt: String,
+    @SerializedName("order_items") val orderItems: List<OrderItem> = emptyList(),
+    val payment: Payment?,
+    val logs: List<OrderLog> = emptyList()
+)
+
+data class OrderItem(
+    val id: Int,
+    @SerializedName("menu_id") val menuId: Int,
+    val quantity: Int,
+    val subtotal: Int,
+    val menu: MenuItem?
+)
+
+data class OrderLog(
+    val id: Int,
+    val status: String?,
+    @SerializedName("created_at") val createdAt: String
+)
+
+data class UpdateStatusRequest(
+    val status: String
 )
 
 // ─── Payment ──────────────────────────────────────────────────────────────────
@@ -63,24 +79,10 @@ data class MenuItem(
 data class Payment(
     val id: Int,
     @SerializedName("order_id") val orderId: Int,
-    @SerializedName("order_code") val orderCode: String,
-    @SerializedName("buyer_name") val buyerName: String,
-    val amount: Long,
-    val status: String,           // paid | unpaid | failed
-    @SerializedName("created_at") val createdAt: String
-)
-
-// ─── Dashboard ────────────────────────────────────────────────────────────────
-
-data class DashboardStats(
-    @SerializedName("total_orders") val totalOrders: Int,
-    val pending: Int,
-    val approved: Int,
-    val paid: Int,
-    val done: Int,
-    val revenue: Long,
-    @SerializedName("revenue_transactions") val revenueTransactions: Int,
-    @SerializedName("recent_orders") val recentOrders: List<Order>
+    @SerializedName("payment_method") val paymentMethod: String?,
+    @SerializedName("payment_status") val paymentStatus: String,
+    @SerializedName("qris_code") val qrisCode: String?,
+    @SerializedName("paid_at") val paidAt: String?
 )
 
 // ─── Generic response wrapper ─────────────────────────────────────────────────

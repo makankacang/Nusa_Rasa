@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.nusa_rasa"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.nusa_rasa"
@@ -39,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.glide)
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     testImplementation(libs.junit)
@@ -46,4 +45,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.zxing:core:3.5.3")
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.logging)
+    implementation(libs.coroutines.android)
+    implementation(libs.lifecycle.runtime.ktx)
 }

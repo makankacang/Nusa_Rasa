@@ -8,17 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nusa_rasa.R
 import com.example.nusa_rasa.model.Payment
-import java.text.NumberFormat
-import java.util.Locale
 
 class PaymentAdapter(
     private var payments: MutableList<Payment>
 ) : RecyclerView.Adapter<PaymentAdapter.ViewHolder>() {
-
-    private val rupiahFormat: NumberFormat =
-        NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
-            maximumFractionDigits = 0
-        }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvPaymentId: TextView      = itemView.findViewById(R.id.tvPaymentId)
@@ -39,16 +32,15 @@ class PaymentAdapter(
         val p   = payments[position]
         val ctx = holder.itemView.context
 
-        holder.tvPaymentId.text      = "#${p.id}"
-        holder.tvPaymentBuyer.text   = p.buyerName
-        holder.tvPaymentOrderRef.text = p.orderCode
-        holder.tvPaymentAmount.text  = rupiahFormat.format(p.amount)
-        holder.tvPaymentTime.text    = p.createdAt.let {
+        holder.tvPaymentId.text       = "#${p.id}"
+        holder.tvPaymentBuyer.text    = "Order #${p.orderId}"
+        holder.tvPaymentOrderRef.text = p.qrisCode ?: "-"
+        holder.tvPaymentAmount.text   = p.paymentMethod ?: "-"
+        holder.tvPaymentTime.text     = p.paidAt?.let {
             if (it.length >= 16) it.substring(0, 16).replace("T", " ") else it
-        }
+        } ?: "-"
 
-        // Status badge
-        when (p.status.lowercase()) {
+        when (p.paymentStatus.lowercase()) {
             "paid" -> {
                 holder.tvPaymentStatus.text = "Paid"
                 holder.tvPaymentStatus.setTextColor(ContextCompat.getColor(ctx, R.color.status_paid_text))

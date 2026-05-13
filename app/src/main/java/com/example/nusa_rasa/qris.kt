@@ -4,55 +4,21 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.nusa_rasa.api.RetrofitClient
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class qris : AppCompatActivity() {
 
-    private val handler = Handler(Looper.getMainLooper())
     private lateinit var tvStatus: TextView
-
-    private val pollRunnable = object : Runnable {
-        override fun run() {
-            when (OrderManager.status) {
-                OrderManager.Status.DITERIMA -> {
-                    Toast.makeText(
-                        this@qris,
-                        "Pesanan diterima! Silakan lakukan pembayaran.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    CartManager.items.clear()
-                    OrderManager.reset()
-                    val intent = Intent(this@qris, masuk::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                }
-                OrderManager.Status.DITOLAK -> {
-                    Toast.makeText(
-                        this@qris,
-                        "Pesanan ditolak oleh admin.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    CartManager.items.clear()
-                    OrderManager.reset()
-                    val intent = Intent(this@qris, masuk::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                }
-                OrderManager.Status.MENUNGGU -> {
-                    handler.postDelayed(this, 2000)
-                }
-            }
-        }
-    }
+    private var isPolling = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,13 +42,71 @@ class qris : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        handler.removeCallbacksAndMessages(null)
-        handler.post(pollRunnable)
+        isPolling = true
+        mulaiBolling()
     }
 
     override fun onPause() {
         super.onPause()
-        handler.removeCallbacksAndMessages(null)
+        isPolling = false
+    }
+
+    private fun mulaiBolling() {
+        lifecycleScope.launch {
+            while (isPolling) {
+                val orderId = OrderManager.orderId
+                if (orderId > 0) {
+                    try {
+                        val response = RetrofitClient.instance.getOrder(orderId)
+                        if (response.isSuccessful) {
+                            when (response.body()?.status?.uppercase()) {
+                                "APPROVED", "PAID", "DONE" -> {
+                                    isPolling = false
+                                    selesaikanPesanan(diterima = true)
+                                    return@launch
+                                }
+                                "REJECTED" -> {
+                                    isPolling = false
+                                    selesaikanPesanan(diterima = false)
+                                    return@launch
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {
+                        // lanjut polling saat jaringan error
+                    }
+                } else {
+                    when (OrderManager.status) {
+                        OrderManager.Status.DITERIMA -> {
+                            isPolling = false
+                            selesaikanPesanan(diterima = true)
+                            return@launch
+                        }
+                        OrderManager.Status.DITOLAK -> {
+                            isPolling = false
+                            selesaikanPesanan(diterima = false)
+                            return@launch
+                        }
+                        OrderManager.Status.MENUNGGU -> {}
+                    }
+                }
+                delay(2000)
+            }
+        }
+    }
+
+    private fun selesaikanPesanan(diterima: Boolean) {
+        val pesan = if (diterima)
+            "Pesanan diterima! Silakan lakukan pembayaran."
+        else
+            "Pesanan ditolak oleh admin."
+        Toast.makeText(this, pesan, Toast.LENGTH_LONG).show()
+        CartManager.items.clear()
+        OrderManager.reset()
+        val intent = Intent(this, masuk::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun generateQr(content: String, size: Int): Bitmap {

@@ -17,7 +17,7 @@ class OrderAdapter(
     private val onReject: ((Order) -> Unit)? = null,
     private val onMarkDone: ((Order) -> Unit)? = null,
     private val onDetail: ((Order) -> Unit)? = null,
-    private val compact: Boolean = false   // true = mode dashboard (tanpa action buttons)
+    private val compact: Boolean = false
 ) : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
 
     private val rupiahFormat: NumberFormat =
@@ -51,33 +51,28 @@ class OrderAdapter(
         val order = orders[position]
         val ctx   = holder.itemView.context
 
-        holder.tvOrderId.text     = order.orderCode.ifEmpty { "#${order.id}" }
+        holder.tvOrderId.text     = "#${order.id}"
         holder.tvTableNumber.text = "Meja ${order.tableNumber}"
         holder.tvBuyerName.text   = order.customerName
-        holder.tvOrderTotal.text  = rupiahFormat.format(order.total)
+        holder.tvOrderTotal.text  = rupiahFormat.format(order.totalPrice)
 
-        // Format waktu: ambil hh:mm dari ISO string
         holder.tvOrderTime.text = order.createdAt.let {
             if (it.length >= 16) it.substring(11, 16) else it
         }
 
-        // Items summary
-        holder.tvOrderItems.text = order.items.joinToString(", ") {
-            "${it.quantity}× ${it.menuName}"
+        holder.tvOrderItems.text = order.orderItems.joinToString(", ") {
+            "${it.quantity}× ${it.menu?.name ?: "Item"}"
         }
 
-        // Note
-        if (!order.note.isNullOrBlank()) {
+        if (!order.notes.isNullOrBlank()) {
             holder.tvOrderNote.visibility = View.VISIBLE
-            holder.tvOrderNote.text = "📝 ${order.note}"
+            holder.tvOrderNote.text = "📝 ${order.notes}"
         } else {
             holder.tvOrderNote.visibility = View.GONE
         }
 
-        // Status badge
         applyStatusBadge(holder.tvStatusBadge, order.status, ctx)
 
-        // Action buttons berdasarkan status
         if (compact) {
             holder.btnApprove.visibility    = View.GONE
             holder.btnReject.visibility     = View.GONE

@@ -1,8 +1,6 @@
 package com.example.nusa_rasa.api
 
 import com.example.nusa_rasa.model.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -10,78 +8,42 @@ interface ApiService {
 
     // ─── Auth ────────────────────────────────────────────────────────────────
 
-    @POST("auth/login")
+    @POST("api/v1/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    // ─── Dashboard ───────────────────────────────────────────────────────────
+    // ─── Menu (publik) ────────────────────────────────────────────────────────
 
-    @GET("dashboard/stats")
-    suspend fun getDashboardStats(
-        @Header("Authorization") token: String
-    ): Response<DashboardStats>
+    @GET("api/v1/menus")
+    suspend fun getMenus(
+        @Query("category") category: String? = null
+    ): Response<List<MenuItem>>
 
-    // ─── Orders ──────────────────────────────────────────────────────────────
+    // ─── Orders (publik — pembeli) ────────────────────────────────────────────
 
-    @GET("orders/")
+    @POST("api/v1/orders")
+    suspend fun createOrder(@Body request: CreateOrderRequest): Response<Order>
+
+    @GET("api/v1/orders/{id}")
+    suspend fun getOrder(@Path("id") orderId: Int): Response<Order>
+
+    // ─── Orders (admin) ──────────────────────────────────────────────────────
+
+    @GET("api/v1/admin/orders")
     suspend fun getOrders(
         @Header("Authorization") token: String,
         @Query("status") status: String? = null
     ): Response<List<Order>>
 
-    @GET("orders/{id}")
-    suspend fun getOrderDetail(
-        @Header("Authorization") token: String,
-        @Path("id") orderId: Int
-    ): Response<Order>
-
-    @PATCH("orders/{id}/status")
+    @PUT("api/v1/admin/orders/{id}/status")
     suspend fun updateOrderStatus(
         @Header("Authorization") token: String,
         @Path("id") orderId: Int,
         @Body request: UpdateStatusRequest
     ): Response<Order>
 
-    // ─── Menu ─────────────────────────────────────────────────────────────────
+    // ─── Menu (admin) ─────────────────────────────────────────────────────────
 
-    @GET("menu/")
-    suspend fun getMenu(
-        @Header("Authorization") token: String,
-        @Query("kategori") kategori: String? = null
-    ): Response<List<MenuItem>>
-
-    @Multipart
-    @POST("menu/")
-    suspend fun createMenu(
-        @Header("Authorization") token: String,
-        @Part("name") name: RequestBody,
-        @Part("price") price: RequestBody,
-        @Part("kategori") kategori: RequestBody,
-        @Part("description") description: RequestBody,
-        @Part("is_available") isAvailable: RequestBody,
-        @Part image: MultipartBody.Part?
-    ): Response<MenuItem>
-
-    @Multipart
-    @PUT("menu/{id}")
-    suspend fun updateMenu(
-        @Header("Authorization") token: String,
-        @Path("id") menuId: Int,
-        @Part("name") name: RequestBody,
-        @Part("price") price: RequestBody,
-        @Part("kategori") kategori: RequestBody,
-        @Part("description") description: RequestBody,
-        @Part("is_available") isAvailable: RequestBody,
-        @Part image: MultipartBody.Part?
-    ): Response<MenuItem>
-
-    @PATCH("menu/{id}/availability")
-    suspend fun toggleMenuAvailability(
-        @Header("Authorization") token: String,
-        @Path("id") menuId: Int,
-        @Body body: Map<String, Boolean>
-    ): Response<MenuItem>
-
-    @DELETE("menu/{id}")
+    @DELETE("api/v1/menus/{id}")
     suspend fun deleteMenu(
         @Header("Authorization") token: String,
         @Path("id") menuId: Int
@@ -89,8 +51,8 @@ interface ApiService {
 
     // ─── Payments ─────────────────────────────────────────────────────────────
 
-    @GET("payments/")
-    suspend fun getPayments(
-        @Header("Authorization") token: String
-    ): Response<List<Payment>>
+    @GET("api/v1/payments/order/{orderId}")
+    suspend fun getPaymentByOrder(
+        @Path("orderId") orderId: Int
+    ): Response<Payment>
 }

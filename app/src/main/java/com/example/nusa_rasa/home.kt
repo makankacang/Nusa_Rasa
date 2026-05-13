@@ -7,26 +7,19 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.nusa_rasa.api.RetrofitClient
+import com.example.nusa_rasa.model.MenuItem as ApiMenuItem
+import kotlinx.coroutines.launch
 
 class home : AppCompatActivity() {
 
-    private val dataMenu = listOf(
-        MenuItem("🍗", "Ayam Taliwang", "Rp 25.000", "Ayam"),
-        MenuItem("🍚", "Nasi Putih", "Rp 5.000", "Nasi"),
-        MenuItem("🍗", "Ayam Bakar Madu", "Rp 28.000", "Ayam"),
-        MenuItem("🥤", "Es Teh Manis", "Rp 6.000", "Minuman"),
-        MenuItem("🍛", "Nasi Ayam Komplit", "Rp 32.000", "Nasi"),
-        MenuItem("🍟", "Kentang Goreng", "Rp 12.000", "Snack"),
-        MenuItem("🍜", "Mie Goreng Spesial", "Rp 18.000", "Snack"),
-        MenuItem("🥗", "Plecing Kangkung", "Rp 10.000", "Snack"),
-        MenuItem("🍢", "Sate Ayam", "Rp 22.000", "Ayam"),
-        MenuItem("🧋", "Es Kopi Susu", "Rp 15.000", "Minuman")
-    )
-
+    private var allMenus: List<MenuItem> = emptyList()
     private var kategoriAktif = "Semua"
     private var querySearch = ""
     private lateinit var adapter: MenuAdapter
@@ -55,7 +48,7 @@ class home : AppCompatActivity() {
             "Snack" to findViewById(R.id.chipSnack)
         )
 
-        adapter = MenuAdapter(dataMenu) { menu ->
+        adapter = MenuAdapter(emptyList()) { menu ->
             CartManager.tambahItem(menu)
             cartBar.visibility = View.VISIBLE
             tvJumlahItem.text = "${CartManager.totalItem()} item"
@@ -84,6 +77,51 @@ class home : AppCompatActivity() {
         }
 
         updateCartBar(cartBar, tvJumlahItem, tvInfoPesanan, tvTotalHarga)
+        loadMenus()
+    }
+
+    private fun loadMenus() {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getMenus()
+                if (response.isSuccessful) {
+                    val apiMenus: List<ApiMenuItem> = response.body() ?: emptyList()
+                    allMenus = apiMenus
+                        .filter { it.isAvailable }
+                        .map { apiItem ->
+                            MenuItem(
+                                menuId = apiItem.id,
+                                emoji = emojiUntukMenu(apiItem.name, apiItem.category),
+                                nama = apiItem.name,
+                                harga = "Rp ${String.format("%,d", apiItem.price).replace(",", ".")}",
+                                kategori = apiItem.category ?: "Lainnya"
+                            )
+                        }
+                    applyFilter()
+                } else {
+                    Toast.makeText(this@home, "Gagal memuat menu", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@home, "Tidak dapat terhubung ke server", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun emojiUntukMenu(name: String, category: String?): String {
+        val n = name.lowercase()
+        return when {
+            "sate" in n     -> "🍢"
+            "mie" in n      -> "🍜"
+            "kangkung" in n -> "🥗"
+            "kentang" in n  -> "🍟"
+            "kopi" in n     -> "☕"
+            "teh" in n      -> "🧋"
+            "nasi" in n && "ayam" in n -> "🍛"
+            "nasi" in n     -> "🍚"
+            "ayam" in n     -> "🍗"
+            "es" in n       -> "🥤"
+            else            -> "🍽️"
+        }
     }
 
     private fun setKategori(label: String) {
@@ -101,8 +139,10 @@ class home : AppCompatActivity() {
     }
 
     private fun applyFilter() {
-        var hasil = dataMenu
-        if (kategoriAktif != "Semua") hasil = hasil.filter { it.kategori == kategoriAktif }
+        var hasil = allMenus
+        if (kategoriAktif != "Semua") hasil = hasil.filter {
+            it.kategori.equals(kategoriAktif, ignoreCase = true)
+        }
         if (querySearch.isNotEmpty()) hasil = hasil.filter {
             it.nama.contains(querySearch, ignoreCase = true)
         }

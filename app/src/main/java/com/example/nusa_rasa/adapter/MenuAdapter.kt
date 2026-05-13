@@ -49,10 +49,9 @@ class MenuAdapter(
 
         holder.tvMenuName.text    = item.name
         holder.tvMenuPrice.text   = rupiahFormat.format(item.price)
-        holder.tvMenuKategori.text = item.kategori.replaceFirstChar { it.uppercase() }
+        holder.tvMenuKategori.text = item.category?.replaceFirstChar { it.uppercase() } ?: ""
 
-        // Gambar menu via Glide
-        val imageUrl = item.imageUrl?.let {
+        val imageUrl = item.image?.let {
             if (it.startsWith("http")) it
             else "${RetrofitClient.BASE_URL.trimEnd('/')}$it"
         }
@@ -63,11 +62,9 @@ class MenuAdapter(
             .centerCrop()
             .into(holder.imgMenu)
 
-        // Overlay "HABIS"
         holder.tvHabisOverlay.visibility =
             if (item.isAvailable) View.GONE else View.VISIBLE
 
-        // Switch ketersediaan — matikan listener dulu agar tidak trigger saat bind
         holder.switchAvailable.setOnCheckedChangeListener(null)
         holder.switchAvailable.isChecked = item.isAvailable
         holder.tvAvailableLabel.text =
