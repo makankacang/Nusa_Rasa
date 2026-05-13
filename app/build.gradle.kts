@@ -46,5 +46,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("com.google.android.material:material:1.11.0")
-    implementation("com.google.zxing:core:3.5.3")
 }
