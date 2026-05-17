@@ -49,6 +49,11 @@ interface ApiService {
         @Query("kategori") kategori: String? = null
     ): Response<List<MenuItem>>
 
+    @GET("api/v1/menus")
+    suspend fun getPublicMenu(
+        @Query("kategori") kategori: String? = null
+    ): Response<List<MenuItem>>
+
     @Multipart
     @POST("menu/")
     suspend fun createMenu(
@@ -93,4 +98,19 @@ interface ApiService {
     suspend fun getPayments(
         @Header("Authorization") token: String
     ): Response<List<Payment>>
+
+    @POST("api/v1/orders")
+    suspend fun createPublicOrder(
+        @Body request: CreateOrderRequest
+    ): Response<Order>
+
+    @GET("api/v1/orders/{id}")
+    suspend fun getPublicOrderDetail(
+        @Path("id") orderId: Int
+    ): Response<Order>
+
+    @POST("api/v1/orders/{id}/confirm-payment")
+    suspend fun confirmPublicPayment(
+        @Path("id") orderId: Int
+    ): Response<Order>
 }

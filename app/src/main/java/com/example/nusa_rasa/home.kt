@@ -4,78 +4,112 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.nusa_rasa.api.RetrofitClient
+import kotlinx.coroutines.launch
+import com.example.nusa_rasa.model.MenuItem as ApiMenuItem
 
 class home : AppCompatActivity() {
+
+    private lateinit var cartBar: View
+    private lateinit var tvJumlahItem: TextView
+    private lateinit var tvInfoPesanan: TextView
+    private lateinit var tvTotalHarga: TextView
+    private lateinit var rvMenu: RecyclerView
+    private var namaPembeli: String = ""
+    private var nomorMeja: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val tvHalo =
-            findViewById<TextView>(R.id.tvHalo)
+        val tvHalo = findViewById<TextView>(R.id.tvHalo)
 
-        val namaPembeli =
-            intent.getStringExtra("namaPembeli") ?: ""
+        namaPembeli = intent.getStringExtra("namaPembeli") ?: ""
+        nomorMeja = intent.getStringExtra("nomorMeja") ?: ""
 
-        if (namaPembeli.isNotEmpty()) {
-
-            tvHalo.text =
-                "Halo, $namaPembeli 👋"
-
+        tvHalo.text = if (namaPembeli.isNotEmpty()) {
+            "Halo, $namaPembeli 👋"
         } else {
-
-            tvHalo.text =
-                "Halo 👋"
+            "Halo 👋"
         }
 
-        val rvMenu = findViewById<RecyclerView>(R.id.rvMenu)
-
-        val cartBar = findViewById<View>(R.id.cartBar)
-        val tvJumlahItem = findViewById<TextView>(R.id.tvJumlahItem)
-        val tvInfoPesanan = findViewById<TextView>(R.id.tvInfoPesanan)
-        val tvTotalHarga = findViewById<TextView>(R.id.tvTotalHarga)
-
-        val dataMenu = listOf(
-
-            MenuItem("🍗", "Ayam Taliwang", "Rp 25.000"),
-            MenuItem("🍚", "Nasi Putih", "Rp 5.000"),
-            MenuItem("🍗", "Ayam Bakar Madu", "Rp 28.000"),
-            MenuItem("🥤", "Es Teh Manis", "Rp 6.000"),
-            MenuItem("🍛", "Nasi Ayam Komplit", "Rp 32.000"),
-            MenuItem("🍟", "Kentang Goreng", "Rp 12.000"),
-            MenuItem("🍜", "Mie Goreng Spesial", "Rp 18.000"),
-            MenuItem("🥗", "Plecing Kangkung", "Rp 10.000"),
-            MenuItem("🍢", "Sate Ayam", "Rp 22.000"),
-            MenuItem("🧋", "Es Kopi Susu", "Rp 15.000")
-
-        )
+        rvMenu = findViewById(R.id.rvMenu)
+        cartBar = findViewById(R.id.cartBar)
+        tvJumlahItem = findViewById(R.id.tvJumlahItem)
+        tvInfoPesanan = findViewById(R.id.tvInfoPesanan)
+        tvTotalHarga = findViewById(R.id.tvTotalHarga)
 
         rvMenu.layoutManager = GridLayoutManager(this, 2)
-
-        rvMenu.adapter = MenuAdapter(dataMenu) { menu ->
-
-            CartManager.tambahItem(menu)
-
-            cartBar.visibility = View.VISIBLE
-
-            tvJumlahItem.text =
-                "${CartManager.totalItem()} item"
-
-            tvInfoPesanan.text =
-                "Subtotal pesanan"
-
-            tvTotalHarga.text =
-                "Rp ${String.format("%,d", CartManager.subtotal()).replace(",", ".")}"
+        cartBar.setOnClickListener {
+            val intent = Intent(this, keranjang::class.java)
+            intent.putExtra("namaPembeli", namaPembeli)
+            intent.putExtra("nomorMeja", nomorMeja)
+            startActivity(intent)
         }
 
-        cartBar.setOnClickListener {
+        loadMenuFromServer()
+        updateCartBar()
+    }
 
-            val intent = Intent(this, keranjang::class.java)
-            startActivity(intent)
+    override fun onResume() {
+        super.onResume()
+        updateCartBar()
+    }
 
+    private fun loadMenuFromServer() {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getPublicMenu()
+                if (response.isSuccessful) {
+                    val dataMenu = response.body().orEmpty().map { item ->
+                        MenuItem(
+                            id = item.id,
+                            emoji = emojiForCategory(item.kategori),
+                            nama = item.name,
+                            harga = formatRupiah(item.price.toInt()),
+                            imageUrl = item.imageUrl
+                        )
+                    }
+
+                    rvMenu.adapter = MenuAdapter(dataMenu) { menu ->
+                        CartManager.tambahItem(menu)
+                        updateCartBar()
+                    }
+                } else {
+                    Toast.makeText(this@home, "Gagal memuat menu", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@home, "Tidak dapat terhubung ke server", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateCartBar() {
+        if (CartManager.totalItem() > 0) {
+            cartBar.visibility = View.VISIBLE
+            tvJumlahItem.text = "${CartManager.totalItem()} item"
+            tvInfoPesanan.text = "Subtotal pesanan"
+            tvTotalHarga.text = formatRupiah(CartManager.subtotal())
+        } else {
+            cartBar.visibility = View.GONE
+        }
+    }
+
+    private fun formatRupiah(angka: Int): String {
+        return "Rp ${String.format("%,d", angka).replace(",", ".")}"
+    }
+
+    private fun emojiForCategory(kategori: String?): String {
+        return when (kategori?.lowercase()) {
+            "minuman" -> "🥤"
+            "sayuran" -> "🥗"
+            "snack" -> "🍟"
+            else -> "🍽️"
         }
     }
 }

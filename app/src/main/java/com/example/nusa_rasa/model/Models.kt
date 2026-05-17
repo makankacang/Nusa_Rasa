@@ -46,6 +46,20 @@ data class UpdateStatusRequest(
     val status: String
 )
 
+
+data class CreateOrderRequest(
+    @SerializedName("customer_name") val customerName: String,
+    @SerializedName("table_number") val tableNumber: String,
+    val notes: String? = null,
+    val items: List<CreateOrderItemRequest>
+)
+
+data class CreateOrderItemRequest(
+    @SerializedName("menu_id") val menuId: Int,
+    val quantity: Int,
+    val subtotal: Long
+)
+
 // ─── Menu ─────────────────────────────────────────────────────────────────────
 
 data class MenuItem(
