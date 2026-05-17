@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45"
+        app:layout_constraintVertical_bias="0.42"
         app:layout_constraintWidth_max="420dp">
 
         <LinearLayout
@@ -147,6 +147,21 @@
                 app:backgroundTint="@color/primary"
                 app:cornerRadius="10dp"
                 android:layout_marginTop="4dp"/>
+
+            <!-- Tombol beralih ke Pembeli -->
+            <TextView
+                android:id="@+id/tvSwitchToPembeli"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="← Kembali sebagai Pembeli"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

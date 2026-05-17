@@ -5,20 +5,20 @@ object CartManager {
     val items = mutableListOf<CartItem>()
 
     fun tambahItem(menu: MenuItem) {
-
         val hargaAngka = menu.harga
             .replace("Rp", "")
             .replace(".", "")
             .trim()
             .toInt()
 
-        val itemSudahAda = items.find { it.nama == menu.nama }
+        val itemSudahAda = items.find { it.menuId == menu.id }
 
         if (itemSudahAda != null) {
             itemSudahAda.qty++
         } else {
             items.add(
                 CartItem(
+                    menuId = menu.id,
                     emoji = menu.emoji,
                     nama = menu.nama,
                     harga = hargaAngka,

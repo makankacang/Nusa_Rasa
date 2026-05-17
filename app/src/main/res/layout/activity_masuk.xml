@@ -108,7 +108,7 @@
                 android:textSize="15sp"
                 android:inputType="number" />
 
-            <!-- Tombol -->
+            <!-- Tombol Mulai Pesan -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnMulaiPesan"
                 android:layout_width="match_parent"
@@ -128,6 +128,21 @@
                     android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>
+
+            <!-- Tombol beralih ke Admin -->
+            <TextView
+                android:id="@+id/tvAdminLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Masuk sebagai Admin →"
+                android:textColor="@color/primary_red"
+                android:textSize="13sp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
 
         </LinearLayout>
 
