@@ -1,16 +1,16 @@
 package com.example.nusa_rasa
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
+import com.example.nusa_rasa.adapter.OrderItemDetailAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.nusa_rasa.adapter.OrderItemDetailAdapter
 import com.example.nusa_rasa.api.RetrofitClient
 import com.example.nusa_rasa.model.Order
 import com.example.nusa_rasa.model.UpdateStatusRequest
@@ -20,10 +20,13 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class OrderDetailActivity : AppCompatActivity() {
 
     private lateinit var session: SessionManager
+
     private lateinit var toolbar: Toolbar
     private lateinit var layoutProcessing: View
     private lateinit var tvOrderId: TextView
@@ -65,21 +68,21 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun bindViews() {
-        toolbar = findViewById(R.id.toolbar)
-        layoutProcessing = findViewById(R.id.layoutProcessing)
-        tvOrderId = findViewById(R.id.tvOrderId)
-        tvStatusBadge = findViewById(R.id.tvStatusBadge)
-        tvBuyerName = findViewById(R.id.tvBuyerName)
-        tvTableNumber = findViewById(R.id.tvTableNumber)
-        tvOrderTime = findViewById(R.id.tvOrderTime)
-        rvOrderItems = findViewById(R.id.rvOrderItems)
-        layoutNote = findViewById(R.id.layoutNote)
-        tvNote = findViewById(R.id.tvNote)
-        tvTotal = findViewById(R.id.tvTotal)
-        layoutActions = findViewById(R.id.layoutActions)
-        btnReject = findViewById(R.id.btnReject)
-        btnApprove = findViewById(R.id.btnApprove)
-        btnMarkDone = findViewById(R.id.btnMarkDone)
+        toolbar           = findViewById(R.id.toolbar)
+        layoutProcessing  = findViewById(R.id.layoutProcessing)
+        tvOrderId         = findViewById(R.id.tvOrderId)
+        tvStatusBadge     = findViewById(R.id.tvStatusBadge)
+        tvBuyerName       = findViewById(R.id.tvBuyerName)
+        tvTableNumber     = findViewById(R.id.tvTableNumber)
+        tvOrderTime       = findViewById(R.id.tvOrderTime)
+        rvOrderItems      = findViewById(R.id.rvOrderItems)
+        layoutNote        = findViewById(R.id.layoutNote)
+        tvNote            = findViewById(R.id.tvNote)
+        tvTotal           = findViewById(R.id.tvTotal)
+        layoutActions     = findViewById(R.id.layoutActions)
+        btnReject         = findViewById(R.id.btnReject)
+        btnApprove        = findViewById(R.id.btnApprove)
+        btnMarkDone       = findViewById(R.id.btnMarkDone)
     }
 
     private fun setupToolbar() {
@@ -92,7 +95,10 @@ class OrderDetailActivity : AppCompatActivity() {
         setProcessing(true)
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getOrder(orderId)
+                val response = RetrofitClient.instance.getOrderDetail(
+                    token   = session.getToken(),
+                    orderId = orderId
+                )
                 if (response.isSuccessful && response.body() != null) {
                     populateUI(response.body()!!)
                 } else {
@@ -107,39 +113,45 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun populateUI(order: Order) {
-        tvOrderId.text = "ORD-${order.id}"
-        tvBuyerName.text = order.customerName
-        tvTableNumber.text = "Meja ${order.tableNumber ?: "-"}"
-        tvOrderTime.text = order.createdAt.replace("T", " ").let {
+        tvOrderId.text    = order.orderCode.ifEmpty { "ORD-${order.id}" }
+        tvBuyerName.text  = order.customerName
+        tvTableNumber.text = "Meja ${order.tableNumber}"
+        tvOrderTime.text  = order.createdAt.replace("T", " ").let {
             if (it.length >= 16) it.substring(0, 16) else it
         }
-        tvTotal.text = rupiahFormat.format(order.totalPrice)
+        tvTotal.text = rupiahFormat.format(order.total)
 
-        if (!order.notes.isNullOrBlank()) {
+        // Note
+        if (!order.note.isNullOrBlank()) {
             layoutNote.visibility = View.VISIBLE
-            tvNote.text = order.notes
+            tvNote.text = order.note
         } else {
             layoutNote.visibility = View.GONE
         }
 
+        // Status badge
         applyStatusBadge(order.status)
+
+        // Item list (inflate dinamis ke LinearLayout)
         rvOrderItems.layoutManager = LinearLayoutManager(this)
-        rvOrderItems.adapter = OrderItemDetailAdapter(order.orderItems, rupiahFormat)
+        rvOrderItems.adapter = OrderItemDetailAdapter(order.items, rupiahFormat)
+
+        // Tombol aksi berdasarkan status
         setupActionButtons(order)
     }
 
     private fun setupActionButtons(order: Order) {
         layoutActions.visibility = View.VISIBLE
         btnApprove.visibility = View.GONE
-        btnReject.visibility = View.GONE
+        btnReject.visibility  = View.GONE
         btnMarkDone.visibility = View.GONE
 
         when (order.status.lowercase()) {
             "pending" -> {
                 btnApprove.visibility = View.VISIBLE
-                btnReject.visibility = View.VISIBLE
+                btnReject.visibility  = View.VISIBLE
                 btnApprove.setOnClickListener { updateStatus(order.id, "approved") }
-                btnReject.setOnClickListener { showRejectDialog(order.id) }
+                btnReject.setOnClickListener  { showRejectDialog(order.id) }
             }
             "paid" -> {
                 btnMarkDone.visibility = View.VISIBLE
@@ -154,7 +166,7 @@ class OrderDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.instance.updateOrderStatus(
-                    token = session.getToken(),
+                    token   = session.getToken(),
                     orderId = orderId,
                     request = UpdateStatusRequest(newStatus)
                 )
@@ -185,12 +197,12 @@ class OrderDetailActivity : AppCompatActivity() {
 
     private fun applyStatusBadge(status: String) {
         val (bgRes, colorRes, label) = when (status.lowercase()) {
-            "pending" -> Triple(R.drawable.bg_badge_pending, R.color.status_pending_text, "Pending")
+            "pending"  -> Triple(R.drawable.bg_badge_pending,  R.color.status_pending_text,  "Pending")
             "approved" -> Triple(R.drawable.bg_badge_approved, R.color.status_approved_text, "Approved")
-            "paid" -> Triple(R.drawable.bg_badge_paid, R.color.status_paid_text, "Paid")
-            "done" -> Triple(R.drawable.bg_badge_done, R.color.status_done_text, "Selesai")
+            "paid"     -> Triple(R.drawable.bg_badge_paid,     R.color.status_paid_text,     "Paid")
+            "done"     -> Triple(R.drawable.bg_badge_done,     R.color.status_done_text,     "Selesai")
             "rejected" -> Triple(R.drawable.bg_badge_rejected, R.color.status_rejected_text, "Ditolak")
-            else -> Triple(R.drawable.bg_badge_pending, R.color.status_pending_text, status)
+            else       -> Triple(R.drawable.bg_badge_pending,  R.color.status_pending_text,  status)
         }
         tvStatusBadge.setBackgroundResource(bgRes)
         tvStatusBadge.setTextColor(ContextCompat.getColor(this, colorRes))

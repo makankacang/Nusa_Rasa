@@ -24,10 +24,13 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toolbar: Toolbar
+
     private lateinit var tvRevenue: TextView
     private lateinit var tvRevenueInfo: TextView
     private lateinit var tvSeeAllOrders: TextView
     private lateinit var rvRecentOrders: RecyclerView
+
+
 
     private val rupiahFormat: NumberFormat =
         NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
@@ -40,50 +43,48 @@ class DashboardActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
-        if (!session.isLoggedIn()) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-            return
-        }
+        // =====================================================================
+        // MODE TES: cek session di-nonaktifkan sementara.
+        // CARA BALIKIN: hapus komentar pada blok di bawah ini (4 baris).
+         if (!session.isLoggedIn()) {
+             startActivity(Intent(this, LoginActivity::class.java))
+             finish()
+             return
+         }
+        // =====================================================================
 
         bindViews()
-        setupToolbar()
-        setupNavDrawer()
-        setupNavHeader()
 
         tvSeeAllOrders.setOnClickListener {
             startActivity(Intent(this, OrdersActivity::class.java))
         }
-
+        setupToolbar()
+        setupNavDrawer()
+        setupNavHeader()
         loadDashboard()
     }
 
     override fun onResume() {
         super.onResume()
-        if (::session.isInitialized && session.isLoggedIn()) {
-            loadDashboard()
-        }
+        loadDashboard()
     }
 
     private fun bindViews() {
-        drawerLayout = findViewById(R.id.drawerLayout)
-        navigationView = findViewById(R.id.navigationView)
-        toolbar = findViewById(R.id.toolbar)
-        tvRevenue = findViewById(R.id.tvRevenue)
-        tvRevenueInfo = findViewById(R.id.tvRevenueInfo)
-        tvSeeAllOrders = findViewById(R.id.tvSeeAllOrders)
-        rvRecentOrders = findViewById(R.id.rvRecentOrders)
+        drawerLayout     = findViewById(R.id.drawerLayout)
+        navigationView   = findViewById(R.id.navigationView)
+        toolbar          = findViewById(R.id.toolbar)
+        tvRevenue        = findViewById(R.id.tvRevenue)
+        tvRevenueInfo    = findViewById(R.id.tvRevenueInfo)
+        tvSeeAllOrders   = findViewById(R.id.tvSeeAllOrders)
+        rvRecentOrders   = findViewById(R.id.rvRecentOrders)
     }
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.nav_dashboard,
-            R.string.nav_dashboard
+            this, drawerLayout, toolbar,
+            R.string.nav_dashboard, R.string.nav_dashboard
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -94,11 +95,11 @@ class DashboardActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             drawerLayout.closeDrawers()
             when (item.itemId) {
-                R.id.nav_dashboard -> Unit
-                R.id.nav_orders -> startActivity(Intent(this, OrdersActivity::class.java))
-                R.id.nav_menu -> startActivity(Intent(this, MenuActivity::class.java))
-                R.id.nav_payments -> startActivity(Intent(this, PaymentActivity::class.java))
-                R.id.nav_logout -> logout()
+                R.id.nav_dashboard -> { /* sudah di sini */ }
+                R.id.nav_orders    -> startActivity(Intent(this, OrdersActivity::class.java))
+                R.id.nav_menu      -> startActivity(Intent(this, MenuActivity::class.java))
+                R.id.nav_payments  -> startActivity(Intent(this, PaymentActivity::class.java))
+                R.id.nav_logout    -> logout()
             }
             true
         }
@@ -106,41 +107,42 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setupNavHeader() {
         val header = navigationView.getHeaderView(0)
-        val adminName = session.getAdminName().ifEmpty { "Admin" }
-        header.findViewById<TextView>(R.id.tvNavAdminName)?.text = adminName
+        // MODE TES: session kosong, tampilkan nama default
+        header.findViewById<TextView>(R.id.tvNavAdminName)?.text  = session.getAdminName().ifEmpty { "Admin" }
         header.findViewById<TextView>(R.id.tvNavAdminEmail)?.text = session.getAdminEmail().ifEmpty { "admin@nusarasa.id" }
-        header.findViewById<TextView>(R.id.tvNavAvatar)?.text = adminName.firstOrNull()?.uppercase() ?: "A"
+        val initial = session.getAdminName().firstOrNull()?.uppercase() ?: "A"
+        header.findViewById<TextView>(R.id.tvNavAvatar)?.text = initial
     }
 
     private fun loadDashboard() {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getOrders(session.getToken())
+                val response = RetrofitClient.instance.getDashboardStats(session.getToken())
                 if (response.isSuccessful && response.body() != null) {
-                    val orders = response.body()!!
-                    val paidOrders = orders.filter { it.status.equals("paid", true) || it.status.equals("done", true) }
-                    val revenue = paidOrders.sumOf { it.totalPrice }
+                    val stats = response.body()!!
 
-                    tvRevenue.text = rupiahFormat.format(revenue)
-                    tvRevenueInfo.text = "dari ${paidOrders.size} transaksi berhasil"
+                    tvRevenue.text     = rupiahFormat.format(stats.revenue)
+                    tvRevenueInfo.text = "dari ${stats.revenueTransactions} transaksi berhasil"
 
-                    bindStatCard(R.id.statTotalOrders, "Total Pesanan", orders.size.toString(), "semua pesanan")
-                    bindStatCard(R.id.statPending, "Pending", orders.count { it.status.equals("pending", true) }.toString(), "menunggu approval")
-                    bindStatCard(R.id.statPaid, "Paid", orders.count { it.status.equals("paid", true) }.toString(), "sudah bayar")
-                    bindStatCard(R.id.statDone, "Selesai", orders.count { it.status.equals("done", true) }.toString(), "selesai")
+                    bindStatCard(R.id.statTotalOrders, "Total Pesanan", stats.totalOrders.toString(), "hari ini")
+                    bindStatCard(R.id.statPending,     "Pending",       stats.pending.toString(),     "menunggu approval")
+                    bindStatCard(R.id.statPaid,        "Paid",          stats.paid.toString(),        "sudah bayar")
+                    bindStatCard(R.id.statDone,        "Selesai",       stats.done.toString(),        "selesai hari ini")
 
-                    rvRecentOrders.layoutManager = LinearLayoutManager(this@DashboardActivity)
-                    rvRecentOrders.adapter = OrderAdapter(
-                        orders = orders.take(5).toMutableList(),
+                    val adapter = OrderAdapter(
+                        orders   = stats.recentOrders.toMutableList(),
                         onDetail = { order ->
-                            startActivity(Intent(this@DashboardActivity, OrderDetailActivity::class.java).apply {
-                                putExtra("order_id", order.id)
-                            })
+                            val intent = Intent(this@DashboardActivity, OrderDetailActivity::class.java)
+                            intent.putExtra("order_id", order.id)
+                            startActivity(intent)
                         },
                         compact = true
                     )
+                    rvRecentOrders.layoutManager = LinearLayoutManager(this@DashboardActivity)
+                    rvRecentOrders.adapter = adapter
                 }
             } catch (_: Exception) {
+                // Tidak tampilkan error; nilai default tetap tampil
             }
         }
     }
@@ -149,8 +151,9 @@ class DashboardActivity : AppCompatActivity() {
         val card = findViewById<android.view.View>(includeId) ?: return
         card.findViewById<TextView>(R.id.tvStatLabel)?.text = label
         card.findViewById<TextView>(R.id.tvStatValue)?.text = value
-        card.findViewById<TextView>(R.id.tvStatSub)?.text = sub
+        card.findViewById<TextView>(R.id.tvStatSub)?.text   = sub
     }
+
 
     private fun logout() {
         session.clearSession()
