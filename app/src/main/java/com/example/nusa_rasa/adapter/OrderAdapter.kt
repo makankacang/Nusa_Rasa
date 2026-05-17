@@ -13,11 +13,11 @@ import java.util.Locale
 
 class OrderAdapter(
     private var orders: MutableList<Order>,
-    private val onApprove: ((Order) -> Unit)? = null,
-    private val onReject: ((Order) -> Unit)? = null,
+    private val onApprove:  ((Order) -> Unit)? = null,
+    private val onReject:   ((Order) -> Unit)? = null,
     private val onMarkDone: ((Order) -> Unit)? = null,
-    private val onDetail: ((Order) -> Unit)? = null,
-    private val compact: Boolean = false   // true = mode dashboard (tanpa action buttons)
+    private val onDetail:   ((Order) -> Unit)? = null,
+    private val compact: Boolean = false
 ) : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
 
     private val rupiahFormat: NumberFormat =
@@ -26,19 +26,21 @@ class OrderAdapter(
         }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvOrderId: TextView      = itemView.findViewById(R.id.tvOrderId)
-        val tvTableNumber: TextView  = itemView.findViewById(R.id.tvTableNumber)
-        val tvOrderTime: TextView    = itemView.findViewById(R.id.tvOrderTime)
-        val tvBuyerName: TextView    = itemView.findViewById(R.id.tvBuyerName)
-        val tvStatusBadge: TextView  = itemView.findViewById(R.id.tvStatusBadge)
-        val tvOrderItems: TextView   = itemView.findViewById(R.id.tvOrderItems)
-        val tvOrderNote: TextView    = itemView.findViewById(R.id.tvOrderNote)
-        val tvOrderTotal: TextView   = itemView.findViewById(R.id.tvOrderTotal)
-        val btnApprove: View         = itemView.findViewById(R.id.btnApprove)
-        val btnReject: View          = itemView.findViewById(R.id.btnReject)
-        val tvWaitingQris: View      = itemView.findViewById(R.id.tvWaitingQris)
-        val btnMarkDone: View        = itemView.findViewById(R.id.btnMarkDone)
-        val btnDetail: View          = itemView.findViewById(R.id.btnDetail)
+        val cardOrder:           View    = itemView.findViewById(R.id.cardOrder)
+        val tvOrderId:           TextView = itemView.findViewById(R.id.tvOrderId)
+        val tvTableNumber:       TextView = itemView.findViewById(R.id.tvTableNumber)
+        val tvOrderTime:         TextView = itemView.findViewById(R.id.tvOrderTime)
+        val tvBuyerName:         TextView = itemView.findViewById(R.id.tvBuyerName)
+        val tvStatusBadge:       TextView = itemView.findViewById(R.id.tvStatusBadge)
+        val tvOrderItems:        TextView = itemView.findViewById(R.id.tvOrderItems)
+        val tvOrderNote:         TextView = itemView.findViewById(R.id.tvOrderNote)
+        val tvOrderTotal:        TextView = itemView.findViewById(R.id.tvOrderTotal)
+        val tvTapHint:           TextView = itemView.findViewById(R.id.tvTapHint)
+        val layoutPendingActions: View   = itemView.findViewById(R.id.layoutPendingActions)
+        val btnApprove:          View    = itemView.findViewById(R.id.btnApprove)
+        val btnReject:           View    = itemView.findViewById(R.id.btnReject)
+        val tvWaitingQris:       View    = itemView.findViewById(R.id.tvWaitingQris)
+        val btnMarkDone:         View    = itemView.findViewById(R.id.btnMarkDone)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,76 +53,66 @@ class OrderAdapter(
         val order = orders[position]
         val ctx   = holder.itemView.context
 
-        holder.tvOrderId.text     = order.orderCode.ifEmpty { "#${order.id}" }
+        // Data utama
+        holder.tvOrderId.text    = order.orderCode.ifEmpty { "#${order.id}" }
         holder.tvTableNumber.text = "Meja ${order.tableNumber}"
-        holder.tvBuyerName.text   = order.customerName
-        holder.tvOrderTotal.text  = rupiahFormat.format(order.total)
-
-        // Format waktu: ambil hh:mm dari ISO string
-        holder.tvOrderTime.text = order.createdAt.let {
+        holder.tvBuyerName.text  = order.customerName
+        holder.tvOrderTotal.text = rupiahFormat.format(order.total)
+        holder.tvOrderTime.text  = order.createdAt.let {
             if (it.length >= 16) it.substring(11, 16) else it
         }
-
-        // Items summary
-        holder.tvOrderItems.text = order.items.joinToString(", ") {
+        holder.tvOrderItems.text = order.items.joinToString(" • ") {
             "${it.quantity}× ${it.menuName}"
         }
 
-        // Note
-        if (!order.note.isNullOrBlank()) {
-            holder.tvOrderNote.visibility = View.VISIBLE
-            holder.tvOrderNote.text = "📝 ${order.note}"
-        } else {
-            holder.tvOrderNote.visibility = View.GONE
-        }
+        // Catatan
+        val hasNote = !order.note.isNullOrBlank()
+        holder.tvOrderNote.visibility = if (hasNote) View.VISIBLE else View.GONE
+        if (hasNote) holder.tvOrderNote.text = "📝 ${order.note}"
 
         // Status badge
         applyStatusBadge(holder.tvStatusBadge, order.status, ctx)
 
-        // Action buttons berdasarkan status
+        // Klik seluruh card → detail
+        holder.cardOrder.setOnClickListener { onDetail?.invoke(order) }
+
+        // Sembunyikan semua action dulu
+        holder.layoutPendingActions.visibility = View.GONE
+        holder.tvWaitingQris.visibility        = View.GONE
+        holder.btnMarkDone.visibility          = View.GONE
+        holder.tvTapHint.visibility            = View.VISIBLE
+
         if (compact) {
-            holder.btnApprove.visibility    = View.GONE
-            holder.btnReject.visibility     = View.GONE
-            holder.tvWaitingQris.visibility = View.GONE
-            holder.btnMarkDone.visibility   = View.GONE
-            holder.btnDetail.visibility     = View.VISIBLE
-        } else {
-            when (order.status.lowercase()) {
-                "pending" -> {
-                    holder.btnApprove.visibility    = View.VISIBLE
-                    holder.btnReject.visibility     = View.VISIBLE
-                    holder.tvWaitingQris.visibility = View.GONE
-                    holder.btnMarkDone.visibility   = View.GONE
-                    holder.btnDetail.visibility     = View.VISIBLE
+            // Mode dashboard: tidak ada action buttons, cukup hint ketuk
+            return
+        }
+
+        when (order.status.lowercase()) {
+            "pending" -> {
+                holder.layoutPendingActions.visibility = View.VISIBLE
+                holder.tvTapHint.visibility            = View.GONE
+                holder.btnApprove.setOnClickListener {
+                    it.isEnabled = false
+                    onApprove?.invoke(order)
                 }
-                "approved" -> {
-                    holder.btnApprove.visibility    = View.GONE
-                    holder.btnReject.visibility     = View.GONE
-                    holder.tvWaitingQris.visibility = View.VISIBLE
-                    holder.btnMarkDone.visibility   = View.GONE
-                    holder.btnDetail.visibility     = View.VISIBLE
+                holder.btnReject.setOnClickListener {
+                    it.isEnabled = false
+                    onReject?.invoke(order)
                 }
-                "paid" -> {
-                    holder.btnApprove.visibility    = View.GONE
-                    holder.btnReject.visibility     = View.GONE
-                    holder.tvWaitingQris.visibility = View.GONE
-                    holder.btnMarkDone.visibility   = View.VISIBLE
-                    holder.btnDetail.visibility     = View.VISIBLE
-                }
-                else -> {
-                    holder.btnApprove.visibility    = View.GONE
-                    holder.btnReject.visibility     = View.GONE
-                    holder.tvWaitingQris.visibility = View.GONE
-                    holder.btnMarkDone.visibility   = View.GONE
-                    holder.btnDetail.visibility     = View.VISIBLE
+            }
+            "approved" -> {
+                holder.tvWaitingQris.visibility = View.VISIBLE
+                holder.tvTapHint.visibility     = View.GONE
+            }
+            "paid" -> {
+                holder.btnMarkDone.visibility = View.VISIBLE
+                holder.tvTapHint.visibility   = View.GONE
+                holder.btnMarkDone.setOnClickListener {
+                    it.isEnabled = false
+                    onMarkDone?.invoke(order)
                 }
             }
         }
-
-        holder.btnApprove.setOnClickListener  { onApprove?.invoke(order) }
-        holder.btnReject.setOnClickListener   { onReject?.invoke(order) }
-        holder.btnMarkDone.setOnClickListener { onMarkDone?.invoke(order) }
-        holder.btnDetail.setOnClickListener   { onDetail?.invoke(order) }
     }
 
     override fun getItemCount() = orders.size

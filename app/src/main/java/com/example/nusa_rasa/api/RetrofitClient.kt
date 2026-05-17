@@ -14,7 +14,7 @@ object RetrofitClient {
      *  - Perangkat fisik    → "http://<IP_LAPTOP>:8000/"  (pastikan satu jaringan WiFi)
      *  - Produksi / ngrok   → "https://xxxx.ngrok.io/"
      */
-    const val BASE_URL = "http://172.16.67.211:8000/"
+    const val BASE_URL = "http://10.0.2.2:8000/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

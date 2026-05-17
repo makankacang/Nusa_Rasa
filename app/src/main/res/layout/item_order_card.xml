@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Item card pesanan untuk RecyclerView di OrdersActivity dan DashboardActivity.
-    Tombol Approve/Reject/Tandai Selesai ditampilkan kondisional dari Adapter
-    berdasarkan status pesanan.
+    item_order_card.xml
+    - Seluruh card bisa diklik → onDetail
+    - Tombol Approve/Reject/Selesai di baris terpisah bawah supaya tidak kepencet
 -->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardOrder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="12dp"
     app:cardElevation="1dp"
     app:cardBackgroundColor="@color/surface_card">
@@ -102,7 +106,7 @@
                 android:textColor="@color/status_pending_text"/>
         </LinearLayout>
 
-        <!-- Divider tipis -->
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
@@ -129,15 +133,16 @@
             android:textSize="12sp"
             android:textStyle="italic"
             android:textColor="@color/text_tertiary"
-            android:layout_marginBottom="10dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:layout_marginBottom="4dp"/>
 
-        <!-- Row 3: Total | Tombol aksi -->
+        <!-- Row 3: Total + hint ketuk -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
 
             <TextView
                 android:id="@+id/tvOrderTotal"
@@ -149,71 +154,86 @@
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"/>
 
-            <!-- Tombol Approve (tampil saat PENDING) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnApprove"
-                style="@style/Widget.MaterialComponents.Button"
+            <!-- Hint "Ketuk untuk detail" -->
+            <TextView
+                android:id="@+id/tvTapHint"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Approve"
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/primary"
-                app:cornerRadius="8dp"
-                android:layout_marginStart="6dp"
-                android:visibility="gone"/>
+                android:layout_height="wrap_content"
+                android:text="Ketuk untuk detail →"
+                android:textSize="11sp"
+                android:textColor="@color/text_tertiary"/>
 
-            <!-- Tombol Reject (tampil saat PENDING) -->
+        </LinearLayout>
+
+        <!-- ═══════════════════════════════════════════════
+             Row 4: Action Buttons — hanya muncul jika ada aksi
+             Dipisah dari total supaya tidak kepencet tidak sengaja
+             ═══════════════════════════════════════════════ -->
+
+        <!-- Label Menunggu QRIS (APPROVED) -->
+        <TextView
+            android:id="@+id/tvWaitingQris"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⏳ Menunggu pembayaran QRIS dari pelanggan"
+            android:textSize="12sp"
+            android:textColor="@color/status_approved_text"
+            android:background="@color/status_approved_bg"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <!-- Approve + Reject (PENDING) — berdampingan, full width -->
+        <LinearLayout
+            android:id="@+id/layoutPendingActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
                 android:text="Reject"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textColor="@color/primary_light"
                 app:strokeColor="@color/primary_light"
-                app:cornerRadius="8dp"
-                android:layout_marginStart="6dp"
-                android:visibility="gone"/>
+                app:cornerRadius="10dp"
+                android:layout_marginEnd="8dp"/>
 
-            <!-- Label Menunggu QRIS (tampil saat APPROVED) -->
-            <TextView
-                android:id="@+id/tvWaitingQris"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Menunggu Pembayaran QRIS"
-                android:textSize="11sp"
-                android:textColor="@color/status_approved_text"
-                android:background="@color/status_approved_bg"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
-                android:visibility="gone"/>
-
-            <!-- Tombol Tandai Selesai (tampil saat PAID) -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMarkDone"
+                android:id="@+id/btnApprove"
                 style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Tandai Selesai"
-                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="✓ Approve"
+                android:textSize="13sp"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/primary"
-                app:cornerRadius="8dp"
-                android:layout_marginStart="6dp"
-                android:visibility="gone"/>
-
-            <!-- Tombol Detail -->
-            <ImageButton
-                android:id="@+id/btnDetail"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_chevron_right"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/text_tertiary"
-                android:layout_marginStart="4dp"/>
+                app:cornerRadius="10dp"/>
 
         </LinearLayout>
+
+        <!-- Tandai Selesai (PAID) — full width -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMarkDone"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="✓ Tandai Selesai"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="10dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

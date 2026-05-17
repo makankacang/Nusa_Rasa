@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import com.example.nusa_rasa.adapter.OrderItemDetailAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,8 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class OrderDetailActivity : AppCompatActivity() {
 
@@ -31,7 +34,7 @@ class OrderDetailActivity : AppCompatActivity() {
     private lateinit var tvBuyerName: TextView
     private lateinit var tvTableNumber: TextView
     private lateinit var tvOrderTime: TextView
-    private lateinit var rvOrderItems: LinearLayout   // bukan RecyclerView, tapi LinearLayout
+    private lateinit var rvOrderItems: RecyclerView
     private lateinit var layoutNote: View
     private lateinit var tvNote: TextView
     private lateinit var tvTotal: TextView
@@ -56,7 +59,12 @@ class OrderDetailActivity : AppCompatActivity() {
         bindViews()
         setupToolbar()
 
-        if (orderId != -1) loadOrderDetail()
+        if (orderId != -1) {
+            loadOrderDetail()
+        } else {
+            showSnack("Order ID tidak ditemukan")
+            finish()
+        }
     }
 
     private fun bindViews() {
@@ -125,14 +133,8 @@ class OrderDetailActivity : AppCompatActivity() {
         applyStatusBadge(order.status)
 
         // Item list (inflate dinamis ke LinearLayout)
-        rvOrderItems.removeAllViews()
-        order.items.forEach { item ->
-            val row = LayoutInflater.from(this)
-                .inflate(R.layout.item_order_item_detail, rvOrderItems, false)
-            row.findViewById<TextView>(R.id.tvItemName)?.text     = "${item.quantity}× ${item.menuName}"
-            row.findViewById<TextView>(R.id.tvItemSubtotal)?.text = rupiahFormat.format(item.subtotal)
-            rvOrderItems.addView(row)
-        }
+        rvOrderItems.layoutManager = LinearLayoutManager(this)
+        rvOrderItems.adapter = OrderItemDetailAdapter(order.items, rupiahFormat)
 
         // Tombol aksi berdasarkan status
         setupActionButtons(order)

@@ -55,10 +55,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // =====================================================================
-        // MODE TES: tombol Login langsung masuk Dashboard tanpa hit API.
-        // CARA BALIKIN: ganti baris di bawah ini dari goToDashboard() → attemptLogin()
-        // =====================================================================
         btnLogin.setOnClickListener { attemptLogin() }
 
         etEmail.setOnFocusChangeListener    { _, _ -> clearError() }
