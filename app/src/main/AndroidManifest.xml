@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -13,48 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NusaRasaAdmin">
 
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false" />
+        <activity android:name=".DashboardActivity" android:exported="false" />
+        <activity android:name=".MenuActivity" android:exported="false" />
+        <activity android:name=".OrderDetailActivity" android:exported="false" />
+        <activity android:name=".OrdersActivity" android:exported="false" />
+        <activity android:name=".PaymentActivity" android:exported="false" />
+        <activity android:name=".AddMenuActivity" android:exported="false" />
+        <activity android:name=".admin" android:exported="false" />
+        <activity android:name=".qris" android:exported="false" />
+        <activity android:name=".keranjang" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".home" android:exported="false" />
+        <activity android:name=".splash" android:exported="false" />
+        <activity android:name=".masuk" android:exported="false" />
 
-        <activity
-            android:name=".MenuActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".OrderDetailActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".OrdersActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".PaymentActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".AddMenuActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".admin"
-            android:exported="false" />
-        <activity
-            android:name=".qris"
-            android:exported="false" />
-        <activity
-            android:name=".keranjang"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".home"
-            android:exported="false" />
-        <activity
-            android:name=".splash"
-            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -65,5 +39,4 @@
         </activity>
 
     </application>
-
 </manifest>

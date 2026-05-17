@@ -31,38 +31,33 @@ class LoginActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
-        // =====================================================================
-        // MODE TES: cek session di-nonaktifkan sementara.
-        // CARA BALIKIN: hapus komentar pada blok di bawah ini (4 baris).
-         if (session.isLoggedIn()) {
-             goToDashboard()
-             return
-         }
-        // =====================================================================
+        if (session.isLoggedIn()) {
+            goToDashboard()
+            return
+        }
 
         bindViews()
         setupListeners()
     }
 
     private fun bindViews() {
-        tilEmail       = findViewById(R.id.tilEmail)
-        tilPassword    = findViewById(R.id.tilPassword)
-        etEmail        = findViewById(R.id.etEmail)
-        etPassword     = findViewById(R.id.etPassword)
-        tvError        = findViewById(R.id.tvError)
-        btnLogin       = findViewById(R.id.btnLogin)
+        tilEmail = findViewById(R.id.tilEmail)
+        tilPassword = findViewById(R.id.tilPassword)
+        etEmail = findViewById(R.id.etEmail)
+        etPassword = findViewById(R.id.etPassword)
+        tvError = findViewById(R.id.tvError)
+        btnLogin = findViewById(R.id.btnLogin)
         loadingOverlay = findViewById(R.id.loadingOverlay)
     }
 
     private fun setupListeners() {
         btnLogin.setOnClickListener { attemptLogin() }
-
-        etEmail.setOnFocusChangeListener    { _, _ -> clearError() }
+        etEmail.setOnFocusChangeListener { _, _ -> clearError() }
         etPassword.setOnFocusChangeListener { _, _ -> clearError() }
     }
 
     private fun attemptLogin() {
-        val email    = etEmail.text.toString().trim()
+        val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
 
         if (email.isEmpty()) {
@@ -73,29 +68,27 @@ class LoginActivity : AppCompatActivity() {
             tilPassword.error = "Password tidak boleh kosong"
             return
         }
-        tilEmail.error    = null
-        tilPassword.error = null
 
+        tilEmail.error = null
+        tilPassword.error = null
         setLoading(true)
 
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.login(
-                    LoginRequest(email, password)
-                )
+                val response = RetrofitClient.instance.login(LoginRequest(email, password))
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
                     session.saveSession(
-                        token      = body.token,
-                        adminId    = body.admin.id,
-                        adminName  = body.admin.name,
-                        adminEmail = body.admin.email
+                        token = body.accessToken,
+                        adminId = body.adminId,
+                        adminName = body.name,
+                        adminEmail = email
                     )
                     goToDashboard()
                 } else {
                     val errorMsg = when (response.code()) {
-                        401  -> "Email atau password salah"
-                        404  -> "Akun tidak ditemukan"
+                        401 -> "Email atau password salah"
+                        404 -> "Akun tidak ditemukan"
                         else -> "Login gagal (${response.code()})"
                     }
                     showError(errorMsg)
@@ -115,17 +108,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setLoading(loading: Boolean) {
         loadingOverlay.visibility = if (loading) View.VISIBLE else View.GONE
-        btnLogin.isEnabled        = !loading
+        btnLogin.isEnabled = !loading
     }
 
     private fun showError(msg: String) {
-        tvError.text       = msg
+        tvError.text = msg
         tvError.visibility = View.VISIBLE
     }
 
     private fun clearError() {
         tvError.visibility = View.GONE
-        tilEmail.error     = null
-        tilPassword.error  = null
+        tilEmail.error = null
+        tilPassword.error = null
     }
 }
