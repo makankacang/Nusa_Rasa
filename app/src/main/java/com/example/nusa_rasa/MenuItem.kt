@@ -4,5 +4,6 @@ data class MenuItem(
     val id: Int,
     val emoji: String,
     val nama: String,
-    val harga: String
+    val harga: String,
+    val imageUrl: String? = null   // ← tambahan untuk load gambar dari server
 )

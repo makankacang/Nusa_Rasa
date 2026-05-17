@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nusa_rasa.api.RetrofitClient
 import kotlinx.coroutines.launch
+import com.example.nusa_rasa.model.MenuItem as ApiMenuItem
 
 class home : AppCompatActivity() {
 
@@ -70,7 +71,8 @@ class home : AppCompatActivity() {
                             id = item.id,
                             emoji = emojiForCategory(item.kategori),
                             nama = item.name,
-                            harga = formatRupiah(item.price.toInt())
+                            harga = formatRupiah(item.price.toInt()),
+                            imageUrl = item.imageUrl
                         )
                     }
 
